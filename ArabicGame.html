@@ -1,0 +1,261 @@
+﻿<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Sans Serif Collection';
+            box-sizing: border-box;
+        }
+
+        .quiz {
+            background: #fff;
+            width: 90%;
+            max-width: 600px;
+            margin: 100px auto 0;
+            border-radius: 10px;
+            padding: 30px;
+        }
+
+        body {
+            background-color: #001e4d;
+        }
+
+        input[id='1'], input[id='2'], input[id='3'] {
+            width: 20%;
+            background-color: #808080;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+            input[id='1']:hover, input[id='2']:hover, input[id='3']:hover {
+                background-color: #373737;
+            }
+
+        input[id='nextButton'], input[id='start'] {
+            width: 25%;
+            background-color: #7cbe10;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+            input[id='nextButton']:hover, input[id='start']:hover {
+                background-color: #3f7212;
+            }
+    </style>
+    <title>Arabic game</title>
+    <script>
+
+        var questions = [
+            "?במה אמל ודודה שלה שיחקו",
+            "?כמה זמן אמל ואביה נשארו אצל הדודה",
+            "?לאיפה אביה הלך",
+            " תרגמו: أمي",
+            "תרגמו: وأبي",
+            "תרגמו: أنا",
+            "?איפה המשפחה של אמל גרים",
+            "?את מה אבא של אמל עזב",
+            "?מאיפה המשפחה של אמל",
+            "?במה אימא של אמל עובדת",
+            "?את מי אמל ואביה ביקרו",
+            "?מה יש לדוד שלה",
+            "?עם מי אמל גרה",
+            "?עם מי אמל ביקרה את הדודה שלה"];
+
+        var options = [
+            // 1-3
+            1, // 0
+            2, // 1
+            3, // 2
+            3, // 3
+            1, // 4
+            2, // 5
+            1, // 6
+            3, // 7
+            2, // 8
+            1, // 9
+            1, // 10
+            2, // 11
+            1, // 12
+            3  // 13
+        ];
+
+        var optionString = [
+            ["מחשב וכדורגל", "מחשב וטניס", "טניס וכדורגל"],
+            ["יומיים", "ארבעה ימים", "שלושה ימים"],
+            ["ליישוב", "לכפר", "לעיר"],
+            ["אוכל", "פיצה", "אימי"],
+            ["ואבי", "והכלב", "והחתול"],
+            ["אתה", "אני", "את"],
+            ["בכפר", "בעיר", "ביישוב"],
+            ["העיר", "היישוב", "הכפר"],
+            ["בית זרזיר", "עמאן", "תל-אביב"],
+            ["רופא/אחות", "מורה/סייעת", "עורכת דין/הי-טק"],
+            ["את הדוד/ה שלהם", "את הסבא/תא שלהם", "את ירדן"],
+            ["בית חולים", "כרם", "מפעל"],
+            ["הוריה", "בני דודים שלה", "סבא וסבתא שלה"],
+            ["סבא שלה", "אימא שלה", "אבא שלה"]
+        ];
+
+        var answer = 0;
+
+        var correct = 0;
+        var guesses = 0;
+
+        function start() {
+
+            var start = document.getElementById("start");
+            document.getElementById("quizDiv").removeChild(start);
+
+            createQuestion();
+            guesses += 1;
+            document.getElementById("guessesAndCorrects").innerHTML = guesses + "/10, צדקת ב: " + correct;
+        }
+
+        function createQuestion() {
+            var randQ = Math.floor(Math.random() * questions.length);
+
+            document.getElementById("question").innerHTML = questions[randQ];
+            answer = options[randQ];
+
+            document.getElementById("1").value = optionString[randQ][0];
+            document.getElementById("2").value = optionString[randQ][1];
+            document.getElementById("3").value = optionString[randQ][2];
+
+        }
+
+        function next() {
+
+            var next = document.createElement("input");
+            var space = document.createElement("br");
+
+            document.getElementById("guessesAndCorrects").innerHTML = guesses + "/10, צדקת ב: " + correct;
+
+            next.type = "button";
+            next.id = "nextButton";
+            next.value = "Next";
+            next.onclick = function () {
+
+                checkRestart();
+
+                var randQ = Math.floor(Math.random() * questions.length);
+
+                document.getElementById("question").innerHTML = questions[randQ];
+                document.getElementById("correct").innerHTML = "";
+                answer = options[randQ];
+
+                document.getElementById("1").value = optionString[randQ][0];
+                document.getElementById("2").value = optionString[randQ][1];
+                document.getElementById("3").value = optionString[randQ][2];
+
+                document.getElementById("quizDiv").removeChild(space);
+                document.getElementById("quizDiv").removeChild(next);
+
+                guesses += 1;
+                document.getElementById("guessesAndCorrects").innerHTML = guesses + "/10, צדקת ב: " + correct;
+
+
+            }
+
+            document.getElementById("quizDiv").appendChild(space);
+            document.getElementById("quizDiv").appendChild(next);
+
+        }
+
+        function checkRestart() {
+            if (guesses >= 10) {
+                location.replace("PlayAgain.html");
+            }
+        }
+
+        function guess1() {
+
+            if (answer == 0)
+                return;
+
+            if (answer == 1) {
+
+                document.getElementById("correct").innerHTML = "!צדקת";
+                document.getElementById("correct").style = "color:green;";
+                correct += 1;
+            } else {
+                document.getElementById("correct").innerHTML = "...טעית, נסה שנית";
+                document.getElementById("correct").style = "color:red;";
+            }
+
+
+            answer = 0;
+            next();
+        }
+
+        function guess2() {
+
+            if (answer == 0)
+                return;
+
+
+            if (answer == 2) {
+
+                document.getElementById("correct").innerHTML = "!צדקת";
+                document.getElementById("correct").style = "color:green;";
+                correct += 1;
+            } else {
+                document.getElementById("correct").innerHTML = "...טעית, נסה שנית";
+                document.getElementById("correct").style = "color:red;";
+            }
+
+
+            answer = 0;
+            next();
+        }
+
+        function guess3() {
+            if (answer == 0)
+                return;
+
+
+            if (answer == 3) {
+
+                document.getElementById("correct").innerHTML = "!צדקת";
+                document.getElementById("correct").style = "color:green;";
+                correct += 1;
+            } else {
+                document.getElementById("correct").innerHTML = "...טעית, נסה שנית";
+                document.getElementById("correct").style = "color:red;";
+            }
+
+
+            answer = 0;
+            next();
+        }
+
+    </script>
+</head>
+<body>
+
+    <div class="quiz" id="quizDiv">
+        <input type="button" id="start" value="Start!" onclick="start()" />
+        <h1 id="test"></h1>
+        <h1 id="question"></h1>
+        <h3 id="guessesAndCorrects"></h3>
+        <h2 id="correct"></h2>
+        <input type="button" id="1" value="?" onclick="guess1()" /><br />
+        <input type="button" id="2" value="?" onclick="guess2()" /><br />
+        <input type="button" id="3" value="?" onclick="guess3()" /><br />
+    </div>
+
+</body>
+</html>
